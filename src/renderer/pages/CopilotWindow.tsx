@@ -81,9 +81,6 @@ export default function CopilotWindow(props: Props) {
 
     const useCopilot = (detail: CopilotDetail) => {
         const newDetail = { ...detail, usedCount: (detail.usedCount || 0) + 1 }
-        if (newDetail.shared) {
-            remote.recordCopilotShare(newDetail)
-        }
         store.addOrUpdate(newDetail)
         createChatSessionWithCopilot(newDetail)
         props.close()
@@ -467,14 +464,6 @@ function CopilotForm(props: CopilotFormProps) {
                 onChange={inputHandler('picUrl')}
             />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <FormGroup row>
-                    <FormControlLabel
-                        control={<Switch />}
-                        label={t('Share with Chatbox')}
-                        checked={copilotEdit.shared}
-                        onChange={(e, checked) => setCopilotEdit({ ...copilotEdit, shared: checked })}
-                    />
-                </FormGroup>
                 <ButtonGroup>
                     <Button variant="outlined" onClick={() => props.close()}>
                         {t('cancel')}

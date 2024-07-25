@@ -91,6 +91,14 @@ export const currentSessionAtom = atom((get) => {
         return sessions[sessions.length - 1]    // fallback to the last session
     }
     return current
+}, 
+(get, set, update: SetStateAction<Session>) => {
+    const sessions = get(sessionsAtom);
+    const currentSessionId = get(currentSessionIdAtom);
+    const newSessions = sessions.map((session) =>
+        session.id === currentSessionId ? (typeof update === 'function' ? update(session) : update) : session
+    );
+    set(sessionsAtom, newSessions);
 })
 
 export const currentSessionNameAtom = selectAtom(currentSessionAtom, (s) => s.name)

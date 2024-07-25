@@ -76,19 +76,12 @@ export default function InputBox(props: Props) {
                 borderTopWidth: '1px',
                 borderTopStyle: 'solid',
                 borderTopColor: theme.palette.divider,
+                height:"100%"
             }}
         >
-            <div className={cn('w-full mx-auto flex flex-col')}>
+            <div className={cn('w-full mx-auto flex flex-col')} style={{ height:"100%"}}>
                 <div className='flex flex-row flex-nowrap justify-between py-1'>
                     <div className='flex flex-row items-center'>
-                        <MiniButton className='mr-2 hover:bg-transparent' style={{ color: theme.palette.text.primary }}
-                            onClick={() => {
-                                setEasterEgg(true)
-                                setTimeout(() => setEasterEgg(false), 1000)
-                            }}
-                        >
-                            <img className={cn('w-5 h-5', easterEgg ? 'animate-spin' : '')} src={icon} />
-                        </MiniButton>
                         <MiniButton className='mr-2' style={{ color: theme.palette.text.primary }}
                             onClick={() => setChatConfigDialogSession(sessionActions.getCurrentSession())}
                             tooltipTitle={
@@ -119,7 +112,7 @@ export default function InputBox(props: Props) {
                         </MiniButton>
                     </div>
                 </div>
-                <div className='w-full pl-1 pb-2'>
+                <div className='w-full pl-1 pb-2' style={{ height:"100%"}}>
                     <textarea
                         className={cn(
                             `w-full max-h-[${maxTextareaHeight}px]`,
@@ -130,7 +123,7 @@ export default function InputBox(props: Props) {
                         onKeyDown={onKeyDown}
                         ref={inputRef}
                         style={{
-                            height: 'auto',
+                            height: '100%',
                             minHeight: minTextareaHeight + 'px',
                             color: theme.palette.text.primary,
                             fontFamily: theme.typography.fontFamily,

@@ -92,7 +92,7 @@ export async function activate(licenseKey: string) {
     store.set(settingsAtom, (settings) => {
         const newSettings: Settings = {
             ...settings,
-            aiProvider: ModelProvider.ChatboxAI,
+            aiProvider: ModelProvider.OpenAI,
             licenseKey,
             licenseInstances: {
                 ...(settings.licenseInstances || {}),

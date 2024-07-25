@@ -12,14 +12,6 @@ export default function useVersion() {
             const settings = await platform.getSettings()
             const version = await platform.getVersion()
             _setVersion(version)
-            try {
-                const os = await platform.getPlatform()
-                const needUpdate = await remote.checkNeedUpdate(version, os, config, settings)
-                setNeedCheckUpdate(needUpdate)
-            } catch (e) {
-                console.log(e)
-                // setNeedCheckUpdate(true)
-            }
         }
         handler()
         updateCheckTimer.current = setInterval(handler, 2 * 60 * 60 * 1000)

@@ -1,11 +1,23 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import Avatar from '@mui/material/Avatar'
 import {
     Typography,
     Grid,
     useTheme,
+    ButtonGroup,
+    Tooltip,
+    TextField,
+    IconButton
 } from '@mui/material'
+import MenuItem from '@mui/material/MenuItem'
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import StopIcon from '@mui/icons-material/Stop'
+import CopyAllIcon from '@mui/icons-material/CopyAll'
+import ReplayIcon from '@mui/icons-material/Replay'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -29,6 +41,8 @@ import * as dateFns from "date-fns"
 import { cn } from '@/lib/utils'
 import { estimateTokensFromMessages } from '@/packages/token'
 import { countWord } from '@/packages/word-count'
+import * as atoms from '../stores/atoms'
+import * as sessionActions from '../stores/sessionActions'
 
 export interface Props {
     id?: string
@@ -39,6 +53,9 @@ export interface Props {
     collapseThreshold?: number
     hiddenButtonGroup?: boolean
     small?: boolean
+    delMsg?: () => void
+    refreshMsg?: () => void
+    editMsg?: () => void
 }
 
 export default function Message(props: Props) {
@@ -53,13 +70,25 @@ export default function Message(props: Props) {
     const enableMarkdownRendering = useAtomValue(enableMarkdownRenderingAtom)
     const currentSessionPicUrl = useAtomValue(currsentSessionPicUrlAtom)
     const setOpenSettingWindow = useSetAtom(openSettingDialogAtom)
+    const setChatConfigDialogSession = useSetAtom(atoms.chatConfigDialogAtom)
 
-    const { msg, className, collapseThreshold, hiddenButtonGroup, small } = props
+    const { msg, className, collapseThreshold, hiddenButtonGroup, small, delMsg, refreshMsg, editMsg } = props
 
     const needCollapse = collapseThreshold
         && (JSON.stringify(msg.content)).length > collapseThreshold
         && (JSON.stringify(msg.content)).length - collapseThreshold > 50
     const [isCollapsed, setIsCollapsed] = useState(needCollapse)
+    const [isHovering, setIsHovering] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
+
+    const onStop = useCallback(() => {
+        msg?.cancel?.()
+    }, [msg])
+
+    const onRefresh = useCallback(() => {
+        onStop()
+        refreshMsg && refreshMsg()
+    }, [onStop, props.refreshMsg])
 
     const ref = useRef<HTMLDivElement>(null)
 
@@ -147,7 +176,86 @@ export default function Message(props: Props) {
                     paddingX: '0.3rem',
                 },
             }}
-        >
+            
+            onMouseEnter={() => {
+                setIsHovering(true)
+            }}
+            onMouseOver={() => {
+                setIsHovering(true)
+                console.log(msg.role )
+            }}
+            onMouseLeave={() => {
+                setIsHovering(false)
+            }}
+        >                  
+                {(isHovering && !isEditing) || msg.generating ? (
+                    <Box sx={{ height: '35px' }}>
+                        <ButtonGroup
+                            sx={{ height: '35px' }}
+                            variant="contained"
+                            aria-label="outlined primary button group"
+                        >
+                            {msg.generating ? (
+                                <Tooltip title={t('stop generating')} placement="top">
+                                    <IconButton aria-label="edit" color="warning" onClick={onStop}>
+                                        <StopIcon fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : null}
+                            {msg.role === 'assistant' && !msg.generating ? (
+                                <Tooltip title={t('regenerate')} placement="top">
+                                    <IconButton aria-label="edit" color="primary" onClick={onRefresh}>
+                                        <ReplayIcon fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : null}
+                            {msg.role == 'user' ? (
+                                <Tooltip title={t('edit')} placement="top">
+                                    <IconButton
+                                        aria-label="edit"
+                                        color="primary"
+                                        onClick={() => {
+                                            setIsHovering(false)
+                                            setIsEditing(true)
+                                        }}
+                                    >
+                                        <EditIcon fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : null}
+                            {msg.role === 'user' || msg.role === 'assistant' ? (
+                                <Tooltip title={t('copy')} placement="top">
+                                    <IconButton
+                                        aria-label="copy"
+                                        color="primary"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(msg.content)
+                                        }}
+                                    >
+                                        <CopyAllIcon fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : null}
+                            {msg.role === 'user' || msg.role === 'assistant' ? (
+                                <Tooltip title={t('delete')} placement="top">
+                                    <IconButton
+                                        aria-label="delete"
+                                        color="primary"
+                                        onClick={() => {
+                                            setIsEditing(false)
+                                            setIsHovering(false)
+                                            delMsg && delMsg();
+                                        }}
+                                    >
+                                        <DeleteForeverIcon fontSize="small" />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : null}
+                        </ButtonGroup>
+                    </Box>
+                ) : (
+                    <Box sx={{ height: '35px' }}></Box>
+                )}
             <Grid container wrap="nowrap" spacing={1.5}>
                 <Grid item>
                     <Box sx={{ marginTop: '8px' }}>
@@ -185,7 +293,7 @@ export default function Message(props: Props) {
                                     </Avatar>
                                 ),
                                 system:
-                                        <Avatar
+                                        <Avatar onClick={() => setChatConfigDialogSession(sessionActions.getCurrentSession())}
                                             sx={{
                                                 backgroundColor: theme.palette.warning.main,
                                                 width: '28px',
@@ -200,26 +308,48 @@ export default function Message(props: Props) {
                 </Grid>
                 <Grid item xs sm container sx={{ width: '0px', paddingRight: '15px' }}>
                     <Grid item xs>
-                        <Box className={cn('msg-content', { 'msg-content-small': small })} sx={
-                            small ? { fontSize: theme.typography.body2.fontSize } : {}
-                        }>
-                            {
-                                enableMarkdownRendering && !isCollapsed ? (
-                                    <Markdown>
-                                        {content}
-                                    </Markdown>
-                                ) : (
-                                    <div>
-                                        {content}
-                                        {
-                                            needCollapse && isCollapsed && (
-                                                CollapseButton
-                                            )
-                                        }
-                                    </div>
-                                )
-                            }
-                        </Box>
+                        {isEditing ? (
+                            <TextField
+                                style={{
+                                    width: '100%',
+                                }}
+                                multiline
+                                placeholder="prompt"
+                                defaultValue={msg.content}
+                                onChange={(e) => {
+                                    msg.content = e.target.value
+                                }}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        setIsEditing(false)
+                                        editMsg && editMsg()
+                                    }
+                                }}
+                                id={msg.id + 'input'}
+                            />
+                        ) :(
+                            <Box className={cn('msg-content', { 'msg-content-small': small })} sx={
+                                small ? { fontSize: theme.typography.body2.fontSize } : {}
+                            }>
+                                {
+                                    enableMarkdownRendering && !isCollapsed ? (
+                                        <Markdown>
+                                            {content}
+                                        </Markdown>
+                                    ) : (
+                                        <div>
+                                            {content}
+                                            {
+                                                needCollapse && isCollapsed && (
+                                                    CollapseButton
+                                                )
+                                            }
+                                        </div>
+                                    )
+                                }
+                            </Box>
+                        )}
                         <MessageErrTips msg={msg} />
                         {
                             needCollapse && !isCollapsed && CollapseButton

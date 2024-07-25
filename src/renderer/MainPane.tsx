@@ -21,8 +21,10 @@ export default function MainPane(props: Props) {
         >
             <div className="flex flex-col h-full">
                 <Header />
-                <MessageList />
-                <InputBox currentSessionId={currentSession.id} currentSessionType={currentSession.type || 'chat'} />
+                <MessageList currentSessionId={currentSession.id} />
+                <Box sx={{  maxHeight: '30%', flexGrow: 1}}>
+                    <InputBox currentSessionId={currentSession.id} currentSessionType={currentSession.type || 'chat'} />
+                </Box>
             </div>
         </Box>
     )

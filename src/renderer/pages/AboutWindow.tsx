@@ -33,13 +33,10 @@ export default function AboutWindow(props: Props) {
     const theme = useTheme()
     const language = useAtomValue(atoms.languageAtom)
     const versionHook = useVersion()
-    const [sponsorBanners, setSponsorBanners] = useState<SponsorAboutBanner[]>([])
+    const [sponsorBanners] = useState<SponsorAboutBanner[]>([])
     useEffect(() => {
         if (props.open) {
-            remote.listSponsorAboutBanner().then(setSponsorBanners)
             trackingEvent('about_window', { event_category: 'screen_view' })
-        } else {
-            setSponsorBanners([])
         }
     }, [props.open])
     return (
@@ -99,110 +96,6 @@ export default function AboutWindow(props: Props) {
                         {t('FAQs')}
                     </Button>
                 </Box>
-                <Paper
-                    elevation={2}
-                    className="font-light text-xs m-2 py-1 px-4"
-                    sx={{
-                        backgroundColor: 'paper',
-                    }}
-                >
-                    <div className='my-1'>
-                        <b>Benn:</b>
-                    </div>
-                    <div className='my-1'>
-                        <span>{t('Auther Message')}</span>
-                    </div>
-                    <div className='my-1'>
-                        <a
-                            className='underline font-normal cursor-pointer mr-4' style={{ color: theme.palette.primary.main }}
-                            onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/donate/${language}`)}
-                        >
-                            {t('Donate')}
-                        </a>
-                        <a
-                            className='underline font-normal cursor-pointer mr-4' style={{ color: theme.palette.primary.main }}
-                            onClick={() => platform.openLink(`https://chatboxai.app/redirect_app/author/${language}`)}
-                        >
-                            {t('Follow me on Twitter(X)')}
-                        </a>
-                        {/* <Button
-                            variant="text"
-                            onClick={() =>
-                                api.openLink(`https://chatboxai.app/redirect_app/become_sponsor/${language}`)
-                            }
-                        >
-                            {t('Or become a sponsor')}
-                        </Button> */}
-                    </div>
-                </Paper>
-
-                {sponsorBanners.length > 0 && (
-                    <Divider sx={{ margin: '10px 0 5px 0', opacity: 0.8 }}>
-                        {t('Special thanks to the following sponsors:')}
-                    </Divider>
-                )}
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        '& > :not(style)': {
-                            m: 1,
-                        },
-                        justifyContent: 'center',
-                        opacity: 0.8,
-                    }}
-                >
-                    {sponsorBanners.map((item) => {
-                        return (
-                            <Paper
-                                key={item.name}
-                                elevation={1}
-                                sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    flexDirection: 'column',
-                                    textAlign: 'center',
-                                    autoflowY: 'auto',
-                                    width: '100%',
-                                    height: '128px',
-                                }}
-                            >
-                                {item.type === 'picture' ? (
-                                    <>
-                                        <a href={item.link} target="_blank">
-                                            <img
-                                                style={{
-                                                    maxWidth: '90%',
-                                                    maxHeight: '100px',
-                                                }}
-                                                src={item.pictureUrl}
-                                            />
-                                        </a>
-                                    </>
-                                ) : (
-                                    <>
-                                        <a href={item.link} target="_blank">
-                                            <img style={{ maxWidth: '140px' }} src={item.pictureUrl} />
-                                        </a>
-                                        <a href={item.link} target="_blank">
-                                            <b>{item.title}</b>
-                                        </a>
-                                        <a href={item.link} target="_blank">
-                                            <span>{item.description}</span>
-                                        </a>
-                                    </>
-                                )}
-                            </Paper>
-                        )
-                    })}
-                </Box>
-                {/* <Box>
-                    <h4 className="text-center mb-1 mt-2">{t('Changelog')}</h4>
-                    <Box className="px-6">
-                        <Markdown>{i18n.changelog()}</Markdown>
-                    </Box>
-                </Box> */}
             </DialogContent>
             <DialogActions>
                 <Button onClick={props.close}>{t('close')}</Button>

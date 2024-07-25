@@ -1,80 +1,21 @@
 import {
-    Config,
     CopilotDetail,
-    SponsorAboutBanner,
-    SponsorAd,
-    RemoteConfig,
     ChatboxAILicenseDetail,
-    Settings,
 } from '../../shared/types'
 import { ofetch } from 'ofetch'
 
-export const API_ORIGIN = 'https://chatboxai.app'
-
-
-export async function checkNeedUpdate(version: string, os: string, config: Config, settings: Settings) {
-    type Response = {
-        need_update?: boolean
-    }
-    const res = await ofetch<Response>(`${API_ORIGIN}/chatbox_need_update/${version}`, {
-        method: 'POST',
-        retry: 3,
-        body: {
-            uuid: config.uuid,
-            os: os,
-            allowReportingAndTracking: settings.allowReportingAndTracking ? 1 : 0,
-        },
-    })
-    return !!res['need_update']
-}
-
-export async function getSponsorAd(): Promise<null | SponsorAd> {
-    type Response = {
-        data: null | SponsorAd
-    }
-    const res = await ofetch<Response>(`${API_ORIGIN}/sponsor_ad`, {
-        retry: 3,
-    })
-    return res['data'] || null
-}
-
-export async function listSponsorAboutBanner() {
-    type Response = {
-        data: SponsorAboutBanner[]
-    }
-    const res = await ofetch<Response>(`${API_ORIGIN}/sponsor_ad`, {
-        retry: 3,
-    })
-    return res['data'] || []
-}
+export const API_ORIGIN = 'http://localhost:1212'
 
 export async function listCopilots(lang: string) {
     type Response = {
         data: CopilotDetail[]
     }
-    const res = await ofetch<Response>(`${API_ORIGIN}/api/copilots/list`, {
-        method: 'POST',
+    const res = await ofetch<Response>(`${API_ORIGIN}/static/listCopilots.json`, {
+        method: 'GET',
         retry: 3,
-        body: { lang },
-    })
-    return res['data']
-}
-
-export async function recordCopilotShare(detail: CopilotDetail) {
-    await ofetch(`${API_ORIGIN}/api/copilots/share-record`, {
-        method: 'POST',
-        body: {
-            detail: detail,
-        },
-    })
-}
-
-export async function getRemoteConfig(config: keyof RemoteConfig) {
-    type Response = {
-        data: Pick<RemoteConfig, typeof config>
-    }
-    const res = await ofetch<Response>(`${API_ORIGIN}/api/remote_config/${config}`, {
-        retry: 3,
+        headers: {
+            'Content-Type': 'application/json'
+        }
     })
     return res['data']
 }
