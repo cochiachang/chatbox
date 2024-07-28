@@ -9,6 +9,7 @@ import Groq from "groq-sdk";
 interface Options {
     groqAPIKey: string
     groqModel: string
+    temperature: string
 }
 
 export default class GroqAI extends Base {
@@ -34,7 +35,7 @@ export default class GroqAI extends Base {
       const stream = await groq.chat.completions.create({
           "messages": messages,
           "model": this.options.groqModel,
-          "temperature":0.5,
+          "temperature": this.options.temperature ,
           "stream": true,
       });
       let result = ''

@@ -4,6 +4,7 @@ import OpenAISetting from './OpenAISetting'
 import AIProviderSelect from '../../components/AIProviderSelect'
 import { OllamaHostInput, OllamaModelSelect } from './OllamaSetting'
 import { GroqHostInput, GroqModelSelect } from './GroqSetting'
+import { GeminiAPIKeyInput, GeminiModelSelect } from './GeminiSetting'
 import MaxContextMessageCountSlider from '@/components/MaxContextMessageCountSlider'
 import TemperatureSlider from '@/components/TemperatureSlider'
 
@@ -55,6 +56,27 @@ export default function ModelSettingTab(props: ModelConfigProps) {
                         groqModel={settingsEdit.groqModel}
                         setGroqModel={(v) => setSettingsEdit({ ...settingsEdit, groqModel: v })}
                         groqAPIKey={settingsEdit.groqAPIKey}
+                    />
+                    <MaxContextMessageCountSlider
+                        value={settingsEdit.openaiMaxContextMessageCount}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, openaiMaxContextMessageCount: v })}
+                    />
+                    <TemperatureSlider
+                        value={settingsEdit.temperature}
+                        onChange={(v) => setSettingsEdit({ ...settingsEdit, temperature: v })}
+                    />
+                </>
+            )}
+            {settingsEdit.aiProvider === ModelProvider.Gemini && (
+                <>
+                    <GeminiAPIKeyInput
+                        geminiAPIKey={settingsEdit.geminiAPIKey}
+                        setGeminiAPIKey={(v) => setSettingsEdit({ ...settingsEdit, geminiAPIKey: v })}
+                    />
+                    <GeminiModelSelect
+                        geminiModel={settingsEdit.geminiModel}
+                        setGeminiModel={(v) => setSettingsEdit({ ...settingsEdit, geminiModel: v })}
+                        geminiAPIKey={settingsEdit.geminiAPIKey}
                     />
                     <MaxContextMessageCountSlider
                         value={settingsEdit.openaiMaxContextMessageCount}

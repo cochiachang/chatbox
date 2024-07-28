@@ -64,6 +64,7 @@ export enum ModelProvider {
     OpenAI = 'openai',
     Ollama = 'ollama',
     Groq = 'groq',
+    Gemini = 'gemini',
 }
 
 export interface ModelSettings {
@@ -83,6 +84,11 @@ export interface ModelSettings {
     // groq
     groqAPIKey: string
     groqModel: string
+
+
+    // gemini
+    geminiAPIKey: string
+    geminiModel: string
 
     temperature: number
     topP: number

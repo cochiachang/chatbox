@@ -193,7 +193,6 @@ export async function generate(sessionId: string, targetMsg: Message) {
 
     try {
         const model = getModel(settings, configs)
-        console.log(model)
         switch (session.type) {
             case 'chat':
             case undefined:
