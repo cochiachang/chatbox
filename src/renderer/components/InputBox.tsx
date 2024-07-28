@@ -10,7 +10,8 @@ import {
     Settings2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import icon from '../static/icon.png'
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import VerticalSplitIcon from '@mui/icons-material/VerticalSplit';
 import { trackingEvent } from '@/packages/event'
 import MiniButton from './MiniButton'
 import _ from 'lodash'
@@ -92,6 +93,30 @@ export default function InputBox(props: Props) {
                             tooltipPlacement='top'
                         >
                             <Settings2 size='22' strokeWidth={1} />
+                        </MiniButton>
+                        <MiniButton className='mr-2' style={{ color: theme.palette.text.primary }}
+                            onClick={() => {
+                                inputRef.current?.click()
+                            }}
+                            tooltipTitle={
+                                <div className='text-center inline-block'>
+                                    <span>{t('Upload file')}</span>
+                                </div>
+                            }
+                            tooltipPlacement='top'>
+                            <FileUploadIcon />
+                        </MiniButton>
+                        <MiniButton className='mr-2' style={{ color: theme.palette.text.primary }}
+                            onClick={() => {
+                                setEasterEgg(!easterEgg)
+                            }}
+                            tooltipTitle={
+                                <div className='text-center inline-block'>
+                                    <span>{t('Split Text')}</span>
+                                </div>
+                            }
+                            tooltipPlacement='top'>
+                            <VerticalSplitIcon />
                         </MiniButton>
                     </div>
                     <div className='flex flex-row items-center'>

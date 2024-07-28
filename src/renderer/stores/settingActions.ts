@@ -14,9 +14,6 @@ export function modify(update: Partial<Settings>) {
 export function needEditSetting() {
     const store = getDefaultStore()
     const settings = store.get(atoms.settingsAtom)
-    if (settings.aiProvider === 'chatbox-ai' && !settings.licenseKey) {
-        return true
-    }
     if (
         settings.aiProvider === 'openai' &&
         settings.openaiKey === '' &&
@@ -25,6 +22,9 @@ export function needEditSetting() {
         return true
     }
     if (settings.aiProvider === 'ollama' && !settings.ollamaModel) {
+        return true
+    }
+    if (settings.aiProvider === 'groq' && (!settings.groqAPIKey || !settings.groqModel)) {
         return true
     }
     return false
@@ -40,10 +40,4 @@ export function getProxy() {
     const store = getDefaultStore()
     const settings = store.get(atoms.settingsAtom)
     return settings.proxy
-}
-
-export function getLicenseKey() {
-    const store = getDefaultStore()
-    const settings = store.get(atoms.settingsAtom)
-    return settings.licenseKey
 }

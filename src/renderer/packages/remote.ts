@@ -1,6 +1,5 @@
 import {
     CopilotDetail,
-    ChatboxAILicenseDetail,
 } from '../../shared/types'
 import { ofetch } from 'ofetch'
 
@@ -33,32 +32,6 @@ export async function getDialogConfig(params: { uuid: string; language: string; 
         method: 'POST',
         retry: 3,
         body: params,
-    })
-    return res['data'] || null
-}
-
-export async function getLicenseDetail(params: { licenseKey: string }) {
-    type Response = {
-        data: ChatboxAILicenseDetail | null
-    }
-    const res = await ofetch<Response>(`${API_ORIGIN}/api/license/detail`, {
-        retry: 3,
-        headers: {
-            Authorization: params.licenseKey,
-        },
-    })
-    return res['data'] || null
-}
-
-export async function getLicenseDetailRealtime(params: { licenseKey: string }) {
-    type Response = {
-        data: ChatboxAILicenseDetail | null
-    }
-    const res = await ofetch<Response>(`${API_ORIGIN}/api/license/detail/realtime`, {
-        retry: 3,
-        headers: {
-            Authorization: params.licenseKey,
-        },
     })
     return res['data'] || null
 }
