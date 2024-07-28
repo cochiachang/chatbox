@@ -63,6 +63,7 @@ export function createMessage(role: MessageRole = MessageRoleEnum.User, content:
 export enum ModelProvider {
     OpenAI = 'openai',
     Ollama = 'ollama',
+    Groq = 'groq',
 }
 
 export interface ModelSettings {
@@ -74,26 +75,14 @@ export interface ModelSettings {
     model: Model | 'custom-model'
     openaiCustomModel?: string
 
-    // azure
-    azureEndpoint: string
-    azureDeploymentName: string
-    azureDalleDeploymentName: string
-    azureApikey: string
-
-    // chatglm-6b
-    chatglm6bUrl: string
-
-    // chatbox-ai
-    licenseKey?: string
-    chatboxAIModel?: ChatboxAIModel
-    licenseInstances?: {
-        [key: string]: string
-    }
-    licenseDetail?: ChatboxAILicenseDetail
-
     // ollama
     ollamaHost: string
     ollamaModel: string
+
+
+    // groq
+    groqAPIKey: string
+    groqModel: string
 
     temperature: number
     topP: number
@@ -171,18 +160,3 @@ export interface RemoteConfig {
     setting_chatboxai_first: boolean
     product_ids: number[]
 }
-
-export interface ChatboxAILicenseDetail {
-    type: ChatboxAIModel
-    name: string
-    defaultModel: ChatboxAIModel
-    remaining_quota_35: number
-    remaining_quota_4: number
-    remaining_quota_image: number
-    image_used_count: number
-    image_total_quota: number
-    token_refreshed_time: string
-    token_expire_time: string | null | undefined
-}
-
-export type ChatboxAIModel = 'chatboxai-3.5' | 'chatboxai-4'

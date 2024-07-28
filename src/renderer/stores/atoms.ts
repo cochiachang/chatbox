@@ -35,8 +35,6 @@ export const spellCheckAtom = focusAtom(settingsAtom, (optic) => optic.prop('spe
 export const allowReportingAndTrackingAtom = focusAtom(settingsAtom, (optic) => optic.prop('allowReportingAndTracking'))
 export const enableMarkdownRenderingAtom = focusAtom(settingsAtom, (optic) => optic.prop('enableMarkdownRendering'))
 
-export const licenseDetailAtom = focusAtom(settingsAtom, (optic) => optic.prop('licenseDetail'))
-
 // myCopilots
 export const myCopilotsAtom = atomWithStorage<CopilotDetail[]>(StorageKey.MyCopilots, [], storage)
 

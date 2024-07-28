@@ -16,7 +16,6 @@ import MainPane from './MainPane'
 import { useAtom, useAtomValue } from 'jotai'
 import * as atoms from './stores/atoms'
 import Sidebar from './Sidebar'
-import * as premiumActions from './stores/premiumActions'
 
 function Main() {
     const spellCheck = useAtomValue(atoms.spellCheckAtom)
@@ -54,7 +53,6 @@ function Main() {
 
 export default function App() {
     useI18nEffect()
-    premiumActions.useAutoValidate()
     useSystemLanguageWhenInit()
     const theme = useAppTheme()
     return (

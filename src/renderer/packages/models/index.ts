@@ -1,6 +1,7 @@
 import OpenAI from './openai'
 import { Settings, Config, ModelProvider, SessionType, ModelSettings, Session } from '../../../shared/types'
 import Ollama from './ollama'
+import Groq from './groq'
 
 export function getModel(setting: Settings, config: Config) {
     switch (setting.aiProvider) {
@@ -8,6 +9,8 @@ export function getModel(setting: Settings, config: Config) {
             return new OpenAI(setting)
         case ModelProvider.Ollama:
             return new Ollama(setting)
+        case ModelProvider.Groq:
+            return new Groq(setting)
         default:
             throw new Error('Cannot find model with provider: ' + setting.aiProvider)
     }
@@ -16,6 +19,7 @@ export function getModel(setting: Settings, config: Config) {
 export const aiProviderNameHash = {
     [ModelProvider.OpenAI]: 'OpenAI API',
     [ModelProvider.Ollama]: 'Ollama',
+    [ModelProvider.Groq]: 'Groq',
 }
 
 export const AIModelProviderMenuOptionList = [
@@ -27,6 +31,11 @@ export const AIModelProviderMenuOptionList = [
     {
         value: ModelProvider.Ollama,
         label: aiProviderNameHash[ModelProvider.Ollama],
+        disabled: false,
+    },
+    {
+        value: ModelProvider.Groq,
+        label: aiProviderNameHash[ModelProvider.Groq],
         disabled: false,
     },
 ]
@@ -47,6 +56,8 @@ export function getModelDisplayName(settings: Settings, sessionType: SessionType
             return settings.model || 'unknown'
         case ModelProvider.Ollama:
             return `Ollama (${settings.ollamaModel})`
+        case ModelProvider.Groq:
+            return `Groq (${settings.groqModel})`
         default:
             return 'unknown'
     }
